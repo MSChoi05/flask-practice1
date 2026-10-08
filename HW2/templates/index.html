@@ -14,7 +14,12 @@
 <ul>
     {% for todo in todos %}
     <li>
+        <a href="{{ url_for('toggle', index=loop.index0) }}">완료</a>
+        {% if todos.done %}
+        <span class="done">{{ todo.text }}</span>
+        {% else %}
         {{ todo.text }}
+        {% endif %}
         <a href="{{ url_for('delete', index=loop.index0) }}">Delete</a>
     </li>
     {% endfor %}
