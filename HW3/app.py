@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 app = Flask(__name__)
 
@@ -10,15 +11,18 @@ db = SQLAlchemy(app)
 class Todo(db.Model):
    id = db.Column(db.Integer, primary_key=True)
    text = db.Column(db.String(100), nullable=False)
+   note = db.Column(db.String(200))
    done = db.Column(db.Boolean, default=False)
 
    def __repr__(self):
-       return f'<Todo {self.id} {self.text}>' 
+       return f'<Todo {self.id} {self.text} {self.note}>' 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        db.session.add(Todo(text=request.form['todo']))
+        todo = Todo(text=request.form['todo'],
+                    note=request.form['note'])
+        db.session.add(todo)
         db.session.commit()
         return redirect(url_for('index'))
     todos = Todo.query.all()
